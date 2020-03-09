@@ -27,7 +27,7 @@ Download the app via this link : https://github.com/vietanhle97/SimpleCount/blob
 | Library      | Use                                                                           |
 | ------------ | ----------------------------------------------------------------------------- |
 | Data Binding | For accessing XML layouts without findViewById()                              |
-| Live Data    | For observing changes in Fragments                                            | 
+| Live Data    | For observing changes in Fragments and Activities                             | 
 | Room         | For storing app data into the database                                        |
 | ViewModel    | For MVVM architecture                                                         |
 
