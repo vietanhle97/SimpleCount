@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="event"
+            type="com.example.simplecount.data.db.entity.Event" />
+        <variable
+            name="expense"
+            type="com.example.simplecount.data.db.entity.Expense" />
+        <variable
+            name="expenseCreationViewModel"
+            type="com.example.simplecount.ui.expense.expenseCreation.ExpenseCreationViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scroll"
+        android:scrollbars="vertical"
+        android:focusableInTouchMode="true"
+        android:focusable="true"
+        android:clickable="true">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.expense.expenseCreation.ExpenseCreationActivity"
+            android:focusableInTouchMode="true">
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/expense_creation_bar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.AppBarOverlay"
+                android:layout_marginBottom="16dp"
+                android:focusable="true"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:title="New Expense"
+                    app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title"
+                android:layout_margin="16dp"
+                android:id="@+id/title_input_layout"
+                android:backgroundTint="@color/colorAccent"
+                android:focusable="true"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                app:layout_constraintTop_toBottomOf="@id/expense_creation_bar_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:hintTextColor="@color/colorAccent"
+                app:hintAnimationEnabled="true"
+                app:errorEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="50"
+                app:counterTextColor="@color/colorAccent"
+                app:counterOverflowTextColor="@color/red">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/title_input"
+                    android:maxLength="50"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Amount"
+                android:layout_margin="16dp"
+                android:id="@+id/amount_input_layout"
+                android:focusable="true"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                android:backgroundTint="@color/colorAccent"
+                app:layout_constraintTop_toBottomOf="@id/title_input_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:hintTextColor="@color/colorAccent"
+                app:hintAnimationEnabled="true"
+                app:errorEnabled="true"
+                app:counterOverflowTextColor="@color/red">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/amount_input"
+                    android:inputType="numberDecimal"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:focusable="true"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                app:hintTextColor="@color/colorAccent"
+                android:hint="Date"
+                android:id="@+id/date_input_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/amount_input_layout">
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date_input"
+                    android:text="Date"
+                    android:textSize="19sp"
+                    android:focusable="false"
+                    android:drawableRight="@drawable/ic_drop_down"
+                    android:layout_alignParentStart="true"/>
+
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_margin="16dp"
+                android:id="@+id/payer_input_layout"
+                android:focusable="true"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                app:hintEnabled="true"
+                app:hintTextColor="@color/colorAccent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/date_input_layout">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Paid by">
+                    <EditText
+                        android:id="@+id/payer_input"
+                        android:layout_alignParentStart="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible"
+                        android:text="Hint"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:paddingVertical="10dp"
+                    android:popupBackground="@color/white"
+                    android:id="@+id/payer_spinner"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:focusableInTouchMode="true"
+                    style="@style/Base.Widget.AppCompat.Spinner.Underlined"/>
+
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/participant_recycler"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:focusable="true"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                app:layout_constraintEnd_toStartOf="@+id/amount_recycler"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/payer_input_layout" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/amount_recycler"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:focusable="true"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/payer_input_layout" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
