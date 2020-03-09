@@ -13,6 +13,7 @@ The app was written in Kotlin and using RxKotlin and RxBinding to observe and ha
 | Event creation with title, description and participants                                                                                         | :dollar: | <img width="100%" src="event_creation.gif">    |
 | Expense creation with title, amount, date, payer and participants. Allow users to handle the portion as well as amount they spent in an expense | :dollar: | <img width="100%" src="expense_creation_1.gif">|
 | Calculate the amount users have to pay each other and live update it after the expenses created                                                 | :dollar: | <img width="100%" src="expense_creation_2.gif">|
+| Allow user to delete and undo delete expenses and event| :dollar: | <img width="100%" src="handle_delete.gif"> |
                                      
 
 
