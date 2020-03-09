@@ -5,7 +5,7 @@ An Android App to help users to handle group expenses more efficiently by minimi
 The app was written in Kotlin and using RxKotlin and RxBinding to observe and handle Edittext changes
 
 <p align="center">
-  <img width="50%" src="app_start.gif">
+  <img width="40%" src="app_start.gif">
 </p>
 
 | What the app do                                                                                                                                 | Complete |                   Image                       |
