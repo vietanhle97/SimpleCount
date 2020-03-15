@@ -1,6 +1,6 @@
 # :dollar: Simple Count
 
-An Android App to help users handle group expenses more efficiently by minimizing cash flows among people in group.
+An Android App that help users handle group expenses more efficiently by minimizing cash flows among people in group.
 
 The app was written in Kotlin and using RxKotlin and RxBinding to observe and handle Edittext changes
 
