@@ -13,7 +13,7 @@ class StartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_start)
 
         Thread(Runnable {
-            Thread.sleep(3000)
+            Thread.sleep(5000)
             val intent = Intent(this@StartActivity, MainActivity::class.java)
             startActivity((intent))
             finish()

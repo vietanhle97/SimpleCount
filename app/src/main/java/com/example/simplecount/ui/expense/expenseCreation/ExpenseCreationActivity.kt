@@ -227,7 +227,7 @@ class ExpenseCreationActivity : AppCompatActivity() {
             }
         })
     }
-    
+
     private fun checkValidExpense(participantList : HashMap<Int, User>, amount : Double) : Boolean{
         var validMembers = false
         var total = 0.0

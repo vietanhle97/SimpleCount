@@ -147,6 +147,7 @@ class EventCreationActivity : AppCompatActivity() {
                 name.clear()
                 initRecyclerView(users)
             }
+            binding.participantName.setText("")
         }
     }
 

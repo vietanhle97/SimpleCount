@@ -13,14 +13,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.example.simplecount.R
-import com.example.simplecount.data.db.EventDatabase
 import com.example.simplecount.data.db.ExpenseDatabase
 import com.example.simplecount.data.db.entity.Expense
-import com.example.simplecount.data.db.entity.User
 import com.example.simplecount.databinding.FragmentBalanceBinding
-import com.example.simplecount.ui.expense.expenseDisplay.ExpenseFragment
 import com.example.simplecount.util.Coroutines
-import kotlinx.android.synthetic.main.amount.*
 import kotlin.math.round
 
 /**
@@ -109,9 +105,6 @@ class BalanceFragment : Fragment() {
         }
 
         val min_ = round(minOf2(-amount[maxDebit], amount[maxCredit])*100)/100
-        for (k : Int in 0 until amount.size){
-            Log.e("user $k Dmm", amount[k].toString())
-        }
         amount[maxCredit] -= min_
         amount[maxDebit] += min_
 

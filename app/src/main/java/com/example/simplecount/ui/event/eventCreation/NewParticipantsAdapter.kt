@@ -57,24 +57,23 @@ class NewParticipantsAdapter (
     }
 
     override fun onBindViewHolder(holder: NewParticipantsViewHolder, position: Int) {
-        val user = participantList[position]!!
-        if (position == 0){
+        val user = participantList[position]
+        if (user != null && position == 0){
             holder.delete.visibility = View.GONE
         }
-        holder.name.text = user.name
+        if (user != null) {
+            holder.name.text = user.name
 
-        holder.delete.setOnClickListener {
-            participantList.remove(position)
-            if (participantList.isEmpty()){
-                participantNameHolder.hint = "My name"
-            } else {
-                participantNameHolder.hint = "Other Participant"
+            holder.delete.setOnClickListener {
+                participantList.remove(position)
+                if (participantList.isEmpty()){
+                    participantNameHolder.hint = "My name"
+                } else {
+                    participantNameHolder.hint = "Other Participant"
+                }
+                notifyDataSetChanged()
             }
-            notifyDataSetChanged()
         }
-
-
-
     }
 
     private inline fun retryWhenError(crossinline onError: (ex: Throwable) -> Unit): ObservableTransformer<String, String> = ObservableTransformer { observable ->

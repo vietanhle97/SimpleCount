@@ -23,6 +23,7 @@ class ExpenseCreationViewModel(
 
     val viewModelJob = Job()
     val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    val participantsList = hashMapOf<Int, User>()
 
     private val _currentEvent = MutableLiveData<Event>()
 
@@ -60,6 +61,8 @@ class ExpenseCreationViewModel(
         }
     }
 
+
+
     fun updateEvent(event: Event){
         uiScope.launch {
             updateEventToDatabase(event)
@@ -74,6 +77,12 @@ class ExpenseCreationViewModel(
 
     fun resetIdExpense(){
         _idExpense.value = null
+    }
+
+    fun initEvenMember(event : Event) {
+        for ((k,v) in event.participants){
+            participantsList[k] = User(v.id, v.name, 0.0, true, 1)
+        }
     }
 
     override fun onCleared() {
