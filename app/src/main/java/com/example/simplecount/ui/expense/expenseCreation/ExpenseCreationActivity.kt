@@ -13,10 +13,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
+import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
@@ -53,7 +51,7 @@ import kotlin.math.round
 class ExpenseCreationActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityExpenseCreationBinding
-    var participantList = hashMapOf<Int, User>()
+    lateinit var expenseCreationViewModel: ExpenseCreationViewModel
     var initialAmount = 0.0
     var payerId = 0
     var id : Long = 0L
@@ -66,7 +64,7 @@ class ExpenseCreationActivity : AppCompatActivity() {
         val eventDao = EventDatabase.geInstance(this).eventDao
         val expenseDao = ExpenseDatabase.geInstance(this).expenseDao
         val expenseCreationViewModelFactory = ExpenseCreationViewModelFactory(id, eventDao, expenseDao)
-        val expenseCreationViewModel = ViewModelProviders.of(this, expenseCreationViewModelFactory).get(
+        expenseCreationViewModel = ViewModelProviders.of(this, expenseCreationViewModelFactory).get(
             ExpenseCreationViewModel::class.java)
 
         binding.expenseCreationViewModel = expenseCreationViewModel
@@ -74,8 +72,14 @@ class ExpenseCreationActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
-
+        binding.amountInput.setOnKeyListener { view, keyCode, keyEvent ->
+            Log.e("code", keyCode.toString())
+            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                hideKeyBoard()
+                true
+            }
+            false
+        }
         bindUI(expenseCreationViewModel)
     }
 
@@ -97,11 +101,11 @@ class ExpenseCreationActivity : AppCompatActivity() {
     private fun payerPickerSpinnerSetup(expenseCreationViewModel: ExpenseCreationViewModel){
         payerSelectionDialogSetup(expenseCreationViewModel)
         payerPickerSpinnerCreation()
-        binding.payerInput.setOnClickListener(View.OnClickListener{
+        binding.payerInput.setOnClickListener{
             payerPickerSpinnerCreation()
-        })
+        }
     }
-//
+
     private fun payerPickerSpinnerCreation(){
         hideKeyBoard()
         binding.expenseCreationViewModel!!.currentEvent.observe(this, androidx.lifecycle.Observer {event ->
@@ -125,10 +129,6 @@ class ExpenseCreationActivity : AppCompatActivity() {
                     payerId = p2
                 }
             }
-
-//            val builder = AlertDialog.Builder(this)
-
-
         })
     }
 
@@ -147,10 +147,6 @@ class ExpenseCreationActivity : AppCompatActivity() {
         binding.dateInput.setOnClickListener(View.OnClickListener {
             datePickerDialogCreation()
         })
-
-//        binding.dateInput.setOnClickListener(View.OnClickListener {
-//            binding.dateSpinner.callOnClick()
-//        })
     }
     private fun datePickerDialogCreation(){
         hideKeyBoard()
@@ -192,116 +188,46 @@ class ExpenseCreationActivity : AppCompatActivity() {
 
         expenseCreationViewModel.currentEvent.observe(this, androidx.lifecycle.Observer {event ->
             binding.participantRecycler.layoutManager = LinearLayoutManager(this)
-            binding.amountRecycler.layoutManager = LinearLayoutManager(this)
+//            binding.amountRecycler.layoutManager = LinearLayoutManager(this)
 
             binding.participantRecycler.setHasFixedSize(true)
-            binding.amountRecycler.setHasFixedSize(true)
-
-            for ((k,v) in event.participants){
-                participantList[k] = User(v.id, v.name, 0.0, v.participate, 1)
-            }
-
+//            binding.amountRecycler.setHasFixedSize(true)
+            
+            expenseCreationViewModel.initEvenMember(event)
+            
 
             if(!binding.amountInput.text.isNullOrEmpty()){
                 initialAmount = binding.amountInput.text.toString().toDouble()
             }
-            val memberAdapter = ExpenseMemberAdapter(
-                participantList,
-                initialAmount,
-                {user: User, pos: Int, b : Boolean, s1 : String, s2 : String ->  handleCheckBoxClick(user ,pos, b, s1, s2)},
-                {u : User, i: Int, s: String ->  handlePortionEditText(u, i, s)})
 
-            val amountAdapter = ExpenseAmountAdapter(participantList
-                , {u : User, s: String, i: Int ->  handleAmountEdittext(u, s,i)}
-                , {user: User, d: Double, i: Int -> updatePayAmount(user, d, i)})
-            amountAdapter.setTotalAmount(initialAmount)
+            val memberAdapter = ExpenseAdapter(
+                expenseCreationViewModel.participantsList,
+                applicationContext,
+                currentFocus)
 
             binding.participantRecycler.adapter = memberAdapter
-            binding.amountRecycler.adapter = amountAdapter
-
             memberAdapter.notifyDataSetChanged()
-            amountAdapter.notifyDataSetChanged()
-
-            RxTextView.textChanges(binding.amountInput)
-                .skip(1)
-                .map { it.toString() }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe{
-                    if (it.isEmpty()){
+            binding.amountInput.setOnFocusChangeListener { view, b ->
+                if (!b) {
+                    hideKeyBoard()
+                    if (binding.amountInput.text!!.isEmpty()) {
                         initialAmount = 0.0
-                        amountAdapter.setTotalAmount(initialAmount)
-                        amountAdapter.notifyDataSetChanged()
+                        memberAdapter.setTotalAmount(initialAmount)
+                        memberAdapter.notifyDataSetChanged()
                     } else {
                         try {
-                            initialAmount = it.toDouble()
-                            amountAdapter.setTotalAmount(initialAmount)
-                            amountAdapter.notifyDataSetChanged()
-                        } catch (e : NumberFormatException){
+                            initialAmount = binding.amountInput.text!!.toString().toDouble()
+                            memberAdapter.setTotalAmount(initialAmount)
+                            memberAdapter.notifyDataSetChanged()
+                        } catch (e: NumberFormatException) {
                             binding.amountInput.error = "Invalid Input"
                         }
                     }
                 }
+            }
         })
     }
-
-
-    private fun handleCheckBoxClick(user: User, position: Int, boolean: Boolean, portion: String, amount : String){
-        val newUser = user
-        Log.e("portion", user.portion.toString())
-        if (amount.isEmpty()){
-            newUser.participate = !user.participate
-            if (boolean){
-                if (portion.isEmpty()){
-                    newUser.portion = 1
-                    newUser.payAmount = 0.0
-                } else {
-                    newUser.portion = portion.toInt()
-                    newUser.payAmount = 0.0
-                }
-            } else {
-                newUser.portion = 1
-            }
-        } else {
-            if (!boolean){
-                newUser.participate = !user.participate
-            }
-            newUser.payAmount = amount.toDouble()
-            newUser.portion = 0
-        }
-
-        Log.e("amount", newUser.payAmount.toString())
-        participantList[position] = newUser
-
-//        binding.amountRecycler.adapter!!.notifyDataSetChanged()
-
-        Handler(Looper.getMainLooper()).post(Runnable {
-            binding.amountRecycler.adapter!!.notifyDataSetChanged()
-            binding.participantRecycler.adapter!!.notifyDataSetChanged()
-        })
-
-//        binding.participantRecycler.adapter!!.notifyDataSetChanged()
-    }
-
-    private fun handlePortionEditText(user: User, position: Int, text: String){
-        val newUser = User(user.id, user.name, user.payAmount, user.participate, text.toInt())
-        participantList[position] = newUser
-        binding.amountRecycler.adapter!!.notifyDataSetChanged()
-    }
-
-    private fun handleAmountEdittext(user : User, text: String, position: Int){
-
-        handleCheckBoxClick(user, position, user.participate, "", text)
-
-        binding.participantRecycler.adapter!!.notifyDataSetChanged()
-    }
-
-    private fun updatePayAmount(user : User, payAmount : Double, position : Int){
-        val newUser = User(user.id, user.name, payAmount, user.participate, user.portion)
-        newUser.payAmount = payAmount
-        participantList[position] = newUser
-    }
-
+    
     private fun checkValidExpense(participantList : HashMap<Int, User>, amount : Double) : Boolean{
         var validMembers = false
         var total = 0.0
@@ -316,6 +242,7 @@ class ExpenseCreationActivity : AppCompatActivity() {
         }
 
         for((k,v) in participantList){
+            Log.e("amount", v.payAmount.toString())
             if (v.participate) {
                 validMembers = v.participate
                 if (v.payAmount > amount){
@@ -365,14 +292,14 @@ class ExpenseCreationActivity : AppCompatActivity() {
 
         when(item.itemId){
             R.id.save_event -> {
-                if (checkValidExpense(participantList, initialAmount)){
+                if (checkValidExpense(expenseCreationViewModel.participantsList, initialAmount)){
                     val expense = Expense()
                     expense.apply {
                         title = binding.titleInput.text.toString()
                         eventId = binding.expenseCreationViewModel!!.currentEvent.value!!.id
                         date = binding.dateInput.text.toString()
                         val tmp = hashMapOf<Int, User>()
-                        for ((k,v) in participantList){
+                        for ((k,v) in expenseCreationViewModel.participantsList){
                             if (k == payerId){
                                 tmp[k] = User(v.id, v.name, initialAmount-v.payAmount, v.participate, v.portion)
                             } else {
