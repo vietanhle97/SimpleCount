@@ -2,7 +2,7 @@
 
 An Android App that help users handle group expenses more efficiently by minimizing cash flows among people in group.
 
-The app was written in Kotlin and using RxKotlin and RxBinding to observe and handle Edittext changes
+The app was written in Kotlin.
 
 Download the app via this link : https://github.com/vietanhle97/SimpleCount/blob/master/simple_count.apk
 
